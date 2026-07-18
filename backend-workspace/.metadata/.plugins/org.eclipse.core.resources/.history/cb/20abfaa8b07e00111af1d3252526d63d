@@ -1,0 +1,9 @@
+package com.ihub.www.repo;
+
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository 
+{
+	public String findByUsername(String username);
+}
