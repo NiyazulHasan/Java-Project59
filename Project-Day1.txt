@@ -1,0 +1,346 @@
+=============================================================================
+		Project Title	:	Employee Management System 
+		Client		:	BridgeSoft
+		Environments	:	Java 25, ReactJS + Spring Boot 
+		Database	:	MYSQL Database 
+		Tools		:	Maven, GIT/GITHUB, POSTMAN 
+=============================================================================
+
+Project Structure 
+-----------------
+backend 
+|
+|---src/main/java
+	|
+	|---com.ihub.www
+	|	
+	|---com.ihub.www.entity
+		|
+		|---User.java
+
+	|---com.ihub.www.repo	
+		|		
+		|---UserRepository.java 
+
+	|---com.ihub.www.service
+		|
+		|---AuthService.java
+
+	|---com.ihub.www.controller
+		|		
+		|---AuthController.java
+	
+|---src/main/resources
+	|
+	|---application.properties 
+
+|---src/test/java
+|
+|---pom.xml 
+
+step1:
+------
+	Create a spring starter project i.e backend.
+	ex:
+		starters:
+				Spring web 
+				Spring Data JPA 
+				MySQL Driver
+				Lombok 
+				Spring Boot DevTools 
+step2:
+-----
+	Create a User.java file inside "com.ihub.www.entity" package.
+	
+User.java
+---------
+package com.ihub.www.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name="users")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class User 
+{
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@Column
+	private String username;
+	
+	@Column
+	private String password;
+}
+
+step3:
+------
+	Create a "UserRepository.java" file inside "com.ihub.www.repo" package.
+
+UserRepository.java
+-----------------
+package com.ihub.www.repo;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.ihub.www.entity.User;
+
+@Repository
+public interface UserRepository extends JpaRepository<User,Long>
+{
+	public User findByUsername(String username);
+}
+
+
+step4:
+------
+	Create and use schema in mysql workbench.	
+	ex:
+		drop schema employee_management_system;
+		create schema employee_management_system;
+		use employee_management_system; 
+
+step5:
+------
+	Configure server port, application name , database properties inside 
+  	application.properties file.
+
+application.properties 
+----------------------
+spring.application.name=backend
+
+server.port=9191
+
+spring.datasource.driver-class-name= com.mysql.cj.jdbc.Driver
+spring.datasource.url= jdbc:mysql://localhost:3306/employee_management_system
+spring.datasource.username= root
+spring.datasource.password= root
+
+spring.jpa.hibernate.ddl-auto= update
+spring.jpa.database-platform= org.hibernate.dialect.MySQLDialect
+spring.jpa.show-sql= true
+
+
+step6:
+-----
+	Create a "AuthService.java" file inside "com.ihub.www.service" package.
+
+AuthService.java
+----------------
+package com.ihub.www.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ihub.www.entity.User;
+import com.ihub.www.repo.UserRepository;
+
+@Service
+public class AuthService 
+{
+	@Autowired
+	private UserRepository userRepository;
+	
+	public boolean login(String username, String password)
+	{
+		User user = userRepository.findByUsername(username);
+		if(user==null) return false;
+		
+		return user.getPassword().equals(password);
+	}
+	
+}
+
+step7:
+------
+	Create a "AuthController.java" file inside "com.ihub.www.controller" package.
+
+AuthController.java
+-------------------
+package com.ihub.www.controller;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ihub.www.BackendApplication;
+import com.ihub.www.service.AuthService;
+
+@CrossOrigin(origins = "http://localhost:5173")
+@RestController
+@RequestMapping("/auth/api")
+public class AuthController 
+{
+	@Autowired
+	private AuthService authService;
+	
+	@PostMapping("/login")
+	public boolean login(@RequestBody Map<String,String> data)
+	{
+		return authService.login(data.get("username"),data.get("password"));
+	}
+}
+
+step8:
+-----	
+	Run spring boot project.
+
+step9:
+------
+	Insert a record into users table from mysql workbench.
+	ex:
+		insert into users(username,password) values ('raja','rani');
+
+step10:
+------
+	Test the application by using below request url.
+	ex:
+		HTTP Method	URL
+		----------	---------
+		POST		http://localhost:9191/auth/api/login 
+				Body 
+					RAW(JSON)
+				{	
+					"username" : "raja",
+					"password" : "rani"
+				}
+
+
+
+
+
+
+Project Structure 
+=================
+frontend 
+|
+|-----node_modules
+|
+|-----public
+|
+|-----src
+	|
+	|---main.jsx
+	|---index.css
+	|---App.jsx
+	|---App.css
+	|---App.test.jsx
+	|---components
+		|
+		|---Header.jsx
+		|---Footer.jsx
+		|---Login.jsx
+		|---EmployeeList.jsx
+		
+|-----package.json 
+|-----index.html 
+
+step11:
+------
+	Create a react project i.e frontend.
+	ex:
+		npm create vite@latest 
+
+step12:
+------
+	Test the application.
+	ex:
+		http://localhost:5173
+
+step13:
+------
+	Goto index.css file and remove the completely.
+
+step14:
+------
+	Open a new terminal and switch to the project.
+	ex:
+		cd  frontend
+step15:
+------
+	Install below dependencies in our project.
+	ex:
+		npm install bootstrap
+		npm install axios 
+		npm install react-router-dom 
+
+step16:
+------
+	Import bootstrap inside main.jsx file.
+
+main.jsx
+---------
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+import '../node_modules/bootstrap/dist/css/bootstrap.css';
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+step17:
+------
+	Create a "components" folder inside "src" folder.
+
+step18:
+-------
+	Create a Header.jsx file inside "src/components" folder.
+	
+Header.jsx
+-----------
+import {useNavigate} from 'react-router-dom';
+
+function Header()
+{
+    const navigate = useNavigate();
+
+    const handleLogout = (e)=>{
+        e.preventDefault();
+        localStorage.removeItem("logged");
+        navigate("/login");
+    }
+    return (
+        <nav className="navbar navbar-expland-lg navbar-light bg-light fixed-top">
+            <div className="container">
+                  <a href="" className="navbar-brand fw-bold"> BridgeSoft </a>  
+                  {
+                        localStorage.getItem("logged") &&
+            <button className="btn btn-primary" onClick={handleLogout}> Logout </button>
+                  }
+            </div>    
+        </nav>
+    )
+}
+export default Header;
+
+
+
+
+
+
+
+
+
+
+

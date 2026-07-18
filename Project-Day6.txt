@@ -1,0 +1,46 @@
+How to push the code to GITHUB 
+==============================
+step1:
+------
+	Create a remote repository.
+	ex:
+		https://github.com/NiyazulHasan/Java-Project59
+
+step2:
+------
+	Download and install GIT software.
+	ex:
+		https://git-scm.com/install/windows
+
+step3:
+------
+	Create a "demo" folder on "desktop".
+
+step4:
+------
+	Open the git bash from demo folder.
+
+step5:
+-----
+	Initialized git empty repository.
+	ex:
+		git init 
+
+step6:
+-----		
+	Switch the branch.
+	ex:
+		git branch --move master main 	
+
+step7:
+-----
+	Add the code inside "demo" folder.
+
+
+
+
+
+
+
+
+
